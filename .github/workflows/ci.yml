@@ -21,6 +21,9 @@ jobs:
     - name: Install dependencies
       run: npm install --legacy-peer-deps
 
+    - name: Clean dist/tests
+      run: rm -rf dist/tests
+
     - name: Build TypeScript
       run: npm run build
 

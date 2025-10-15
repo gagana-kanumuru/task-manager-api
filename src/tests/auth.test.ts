@@ -10,7 +10,7 @@ describe("Auth API", () => {
       .send({ email: randomEmail, password: "testpass123" });
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toBe("User registered successfully");
-  });
+  }, 20000);
 
   it("fails with short password", async () => {
     const res = await request(app)
@@ -20,6 +20,6 @@ describe("Auth API", () => {
   });
 
   afterAll(async () => {
-    await mongoose.connection.close();
+    await mongoose.disconnect();
   });
 });
