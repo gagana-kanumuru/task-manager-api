@@ -21,5 +21,7 @@ describe("Auth API", () => {
 
   afterAll(async () => {
     await mongoose.disconnect();
+    if ((global as any).__MONGOD__) {
+    await (global as any).__MONGOD__.stop();}
   });
 });

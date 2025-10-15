@@ -21,9 +21,25 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI!)
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+async function connectDB() {
+  let dbUri = process.env.MONGODB_URI!;
+
+  // Use in-memory MongoDB only during testing
+  if (process.env.NODE_ENV === "test") {
+    const { MongoMemoryServer } = await import("mongodb-memory-server");
+    const mongod = await MongoMemoryServer.create();
+    dbUri = mongod.getUri();
+    // Optionally store mongod to close after tests if you want
+    (global as any).__MONGOD__ = mongod;
+    console.log("Using in-memory MongoDB for testing");
+  }
+
+  await mongoose.connect(dbUri)
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB connection error:", err));
+}
+
+connectDB();
 
 app.get("/", (req, res) => {
   res.send("API is running!");
